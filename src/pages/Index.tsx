@@ -65,7 +65,7 @@ const Index = () => {
           COMING 2026
         </h1>
         <p
-          className="cursor-default text-lg tracking-[0.04em] text-secondary-foreground transition-all duration-[1.4s] ease-out hover:scale-[1.04] sm:text-xl"
+          className="cursor-default text-lg tracking-[0.04em] text-secondary-foreground transition-all duration-[1.8s] ease-out hover:scale-[1.04] sm:text-xl"
           style={{
             opacity: entered ? 1 : 0,
             transform: entered ? "scale(1)" : "scale(0.85)",
