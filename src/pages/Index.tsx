@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import forestBg from "@/assets/forest-bg.jpg";
 import liepnetLogo from "@/assets/liepnet-logo.png";
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [entered, setEntered] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setEntered(true), 100);
@@ -24,7 +24,7 @@ const Index = () => {
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black"
     >
       {/* Parallax background layer */}
       <div
@@ -33,13 +33,17 @@ const Index = () => {
           transform: `translate(${offset.x * -10}px, ${offset.y * -10}px) scale(1.03)`,
         }}
       >
-        <img
-          src={forestBg}
-          alt=""
-          width={1920}
-          height={1080}
-          className="h-full w-full object-cover blur-sm brightness-[0.35]"
-        />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          onCanPlayThrough={() => setVideoLoaded(true)}
+          className="h-full w-full object-cover blur-sm brightness-[0.35] transition-opacity duration-[3s] ease-out"
+          style={{ opacity: videoLoaded ? 1 : 0 }}
+        >
+          <source src="/videos/WXLV_BACKVID1.mp4" type="video/mp4" />
+        </video>
       </div>
 
       {/* Dark overlay */}
