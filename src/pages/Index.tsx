@@ -77,16 +77,15 @@ const Index = () => {
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-8 z-10 flex items-center gap-2 text-sm text-muted-foreground">
-        <span>WXLV is a project created by the</span>
+      <div className="absolute bottom-8 z-10 flex items-center gap-2 text-sm text-white/30">
+        <span>WXLV is a project created by</span>
         <a href="https://liepnet.eu" target="_blank" rel="noopener noreferrer" className="inline-block transition-opacity duration-200 hover:opacity-80">
           <img
             src={liepnetLogo}
             alt="LIEPNET"
-            className="inline-block h-5 brightness-90"
+            className="inline-block h-5 opacity-30"
           />
         </a>
-        <span>project.</span>
       </div>
     </div>
   );
