@@ -53,7 +53,7 @@ const Index = () => {
         }}
       >
         <h1
-          className="cursor-default font-bold tracking-[0.05em] text-foreground transition-all duration-[1.2s] ease-out hover:scale-[1.03] text-5xl sm:text-7xl md:text-[7rem] lg:text-[8.5rem]"
+          className="cursor-default font-bold tracking-[0.05em] text-foreground transition-all duration-[1.6s] ease-out hover:scale-[1.03] text-5xl sm:text-7xl md:text-[7rem] lg:text-[8.5rem]"
           style={{
             background: "linear-gradient(to bottom, hsl(0 0% 100%), hsl(0 0% 65%))",
             WebkitBackgroundClip: "text",
