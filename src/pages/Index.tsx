@@ -22,9 +22,9 @@ const Index = () => {
     >
       {/* Parallax background layer */}
       <div
-        className="absolute inset-[-40px] transition-transform duration-300 ease-out"
+        className="absolute inset-[-20px] transition-transform duration-500 ease-out"
         style={{
-          transform: `translate(${offset.x * -20}px, ${offset.y * -20}px) scale(1.05)`,
+          transform: `translate(${offset.x * -10}px, ${offset.y * -10}px) scale(1.03)`,
         }}
       >
         <img
@@ -39,17 +39,24 @@ const Index = () => {
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-background/40" />
 
-      {/* Content layer — moves opposite to background for parallax depth */}
+      {/* Content layer */}
       <div
-        className="relative z-10 flex flex-col items-center gap-4 px-6 text-center transition-transform duration-300 ease-out"
+        className="relative z-10 flex flex-col items-center gap-3 px-6 text-center transition-transform duration-500 ease-out"
         style={{
-          transform: `translate(${offset.x * 8}px, ${offset.y * 8}px)`,
+          transform: `translate(${offset.x * 4}px, ${offset.y * 4}px)`,
         }}
       >
-        <h1 className="text-5xl font-bold tracking-[0.3em] text-foreground sm:text-7xl md:text-8xl">
+        <h1
+          className="text-5xl font-bold tracking-[0.08em] text-foreground sm:text-7xl md:text-8xl"
+          style={{
+            background: "linear-gradient(to bottom, hsl(0 0% 100%), hsl(0 0% 65%))",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
           COMING 2026
         </h1>
-        <p className="text-lg tracking-[0.15em] text-muted-foreground sm:text-xl">
+        <p className="text-lg tracking-[0.04em] text-secondary-foreground sm:text-xl">
           Latvia's Open Meteorological Network
         </p>
       </div>
@@ -57,11 +64,13 @@ const Index = () => {
       {/* Footer */}
       <div className="absolute bottom-8 z-10 flex items-center gap-2 text-sm text-muted-foreground">
         <span>WXLV is a project created by the</span>
-        <img
-          src={liepnetLogo}
-          alt="LIEPNET"
-          className="inline-block h-5 brightness-90"
-        />
+        <a href="https://liepnet.eu" target="_blank" rel="noopener noreferrer" className="inline-block transition-opacity duration-200 hover:opacity-80">
+          <img
+            src={liepnetLogo}
+            alt="LIEPNET"
+            className="inline-block h-5 brightness-90"
+          />
+        </a>
         <span>project.</span>
       </div>
     </div>
@@ -69,3 +78,4 @@ const Index = () => {
 };
 
 export default Index;
+
