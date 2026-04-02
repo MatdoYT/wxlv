@@ -1,10 +1,16 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import forestBg from "@/assets/forest-bg.jpg";
 import liepnetLogo from "@/assets/liepnet-logo.png";
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [entered, setEntered] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setEntered(true), 100);
+    return () => clearTimeout(t);
+  }, []);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const { clientX, clientY, currentTarget } = e;
@@ -47,16 +53,25 @@ const Index = () => {
         }}
       >
         <h1
-          className="text-5xl font-bold tracking-[0.08em] text-foreground sm:text-7xl md:text-8xl"
+          className="cursor-default font-bold tracking-[0.05em] text-foreground transition-all duration-[1.2s] ease-out hover:scale-[1.03] text-5xl sm:text-7xl md:text-[7rem] lg:text-[8.5rem]"
           style={{
             background: "linear-gradient(to bottom, hsl(0 0% 100%), hsl(0 0% 65%))",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
+            opacity: entered ? 1 : 0,
+            transform: entered ? "scale(1)" : "scale(0.85)",
           }}
         >
           COMING 2026
         </h1>
-        <p className="text-lg tracking-[0.04em] text-secondary-foreground sm:text-xl">
+        <p
+          className="cursor-default text-lg tracking-[0.04em] text-secondary-foreground transition-all duration-[1.4s] ease-out hover:scale-[1.04] sm:text-xl"
+          style={{
+            opacity: entered ? 1 : 0,
+            transform: entered ? "scale(1)" : "scale(0.85)",
+            transitionDelay: "0.15s",
+          }}
+        >
           Latvia's Open Meteorological Network
         </p>
       </div>
