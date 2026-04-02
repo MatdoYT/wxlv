@@ -53,15 +53,16 @@ const Index = () => {
       <div
         className="relative z-10 flex flex-col items-center gap-3 px-6 text-center transition-transform duration-500 ease-out"
         style={{
-          transform: `translate(${offset.x * 4}px, ${offset.y * 4}px)`,
+          transform: `translate(${offset.x * 4}px, ${offset.y * 4}px) perspective(800px) rotateY(${offset.x * 2}deg) rotateX(${offset.y * -2}deg)`,
         }}
       >
         <h1
-          className="cursor-default font-bold tracking-[0.05em] text-foreground transition-all duration-[1.6s] ease-out hover:scale-[1.03] text-5xl sm:text-7xl md:text-[7rem] lg:text-[8.5rem] drop-shadow-[0_0_80px_rgba(255,255,255,0.15)] hover:drop-shadow-[0_0_100px_rgba(255,255,255,0.2)]"
+          className="cursor-default font-bold tracking-[0.05em] text-foreground transition-all duration-[1.6s] ease-out hover:scale-[1.03] text-5xl sm:text-7xl md:text-[7rem] lg:text-[8.5rem]"
           style={{
             background: "linear-gradient(to bottom, hsl(0 0% 100%), hsl(0 0% 65%))",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
+            filter: `drop-shadow(0 0 120px rgba(255,255,255,0.25))`,
             opacity: entered ? 1 : 0,
             transform: entered ? "scale(1)" : "scale(0.85)",
           }}
