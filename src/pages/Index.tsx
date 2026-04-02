@@ -53,7 +53,7 @@ const Index = () => {
         }}
       >
         <h1
-          className="cursor-default font-bold tracking-[0.05em] text-foreground transition-all duration-[1.2s] ease-out hover:scale-[1.03] text-5xl sm:text-7xl md:text-[7rem] lg:text-[8.5rem]"
+          className="cursor-default font-bold tracking-[0.05em] text-foreground transition-all duration-[1.6s] ease-out hover:scale-[1.03] text-5xl sm:text-7xl md:text-[7rem] lg:text-[8.5rem]"
           style={{
             background: "linear-gradient(to bottom, hsl(0 0% 100%), hsl(0 0% 65%))",
             WebkitBackgroundClip: "text",
@@ -65,7 +65,7 @@ const Index = () => {
           COMING 2026
         </h1>
         <p
-          className="cursor-default text-lg tracking-[0.04em] text-secondary-foreground transition-all duration-[1.4s] ease-out hover:scale-[1.04] sm:text-xl"
+          className="cursor-default text-lg tracking-[0.04em] text-secondary-foreground transition-all duration-[1.8s] ease-out hover:scale-[1.04] sm:text-xl"
           style={{
             opacity: entered ? 1 : 0,
             transform: entered ? "scale(1)" : "scale(0.85)",
@@ -77,16 +77,15 @@ const Index = () => {
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-8 z-10 flex items-center gap-2 text-sm text-muted-foreground">
-        <span>WXLV is a project created by the</span>
+      <div className="absolute bottom-8 z-10 flex items-center gap-2 text-sm text-white/30">
+        <span>WXLV is a project created by</span>
         <a href="https://liepnet.eu" target="_blank" rel="noopener noreferrer" className="inline-block transition-opacity duration-200 hover:opacity-80">
           <img
             src={liepnetLogo}
             alt="LIEPNET"
-            className="inline-block h-5 brightness-90"
+            className="inline-block h-5 opacity-30"
           />
         </a>
-        <span>project.</span>
       </div>
     </div>
   );
