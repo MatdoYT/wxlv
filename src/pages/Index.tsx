@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import liepnetLogo from "@/assets/liepnet-logo.png";
+import wxlvLogo from "@/assets/wxlv-logo.png";
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,6 +57,16 @@ const Index = () => {
           transform: `translate(${offset.x * 4}px, ${offset.y * 4}px) perspective(800px) rotateY(${offset.x * 2}deg) rotateX(${offset.y * -2}deg)`,
         }}
       >
+        <img
+          src={wxlvLogo}
+          alt="WXLV"
+          className="mb-4 h-16 sm:h-20 md:h-24 lg:h-28 w-auto transition-all duration-[1.6s] ease-out"
+          style={{
+            opacity: entered ? 1 : 0,
+            transform: entered ? "scale(1)" : "scale(0.85)",
+            filter: "brightness(1.1) drop-shadow(0 0 60px rgba(255,255,255,0.15))",
+          }}
+        />
         <h1
           className="cursor-default font-bold tracking-[0.05em] text-foreground transition-all duration-[1.6s] ease-out hover:scale-[1.03] text-5xl sm:text-7xl md:text-[7rem] lg:text-[8.5rem]"
           style={{
