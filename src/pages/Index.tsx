@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import liepnetLogo from "@/assets/liepnet-logo.png";
+import wxlvLogo from "@/assets/wxlv-logo.png";
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
