@@ -57,7 +57,7 @@ const Index = () => {
         className="absolute top-[12%] z-10 h-20 sm:h-28 md:h-32 lg:h-40 w-auto transition-all duration-[1.6s] ease-out"
         style={{
           opacity: entered ? 1 : 0,
-          transform: `translate(${offset.x * 4}px, ${offset.y * 4}px) ${entered ? "scale(1)" : "scale(0.85)"}`,
+          transform: entered ? "scale(1)" : "scale(0.85)",
           filter: "brightness(1.1) drop-shadow(0 0 60px rgba(255,255,255,0.15))",
         }}
       />
