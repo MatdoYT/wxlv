@@ -52,7 +52,7 @@ const Index = () => {
 
       {/* Content layer */}
       <div
-        className="relative z-10 flex flex-col items-center gap-3 px-6 text-center transition-transform duration-500 ease-out"
+        className="relative z-10 flex flex-col items-center px-6 text-center transition-transform duration-500 ease-out"
         style={{
           transform: `translate(${offset.x * 4}px, ${offset.y * 4}px) perspective(800px) rotateY(${offset.x * 2}deg) rotateX(${offset.y * -2}deg)`,
         }}
@@ -60,7 +60,7 @@ const Index = () => {
         <img
           src={wxlvLogo}
           alt="WXLV"
-          className="mb-4 h-32 sm:h-40 md:h-48 lg:h-56 w-auto transition-all duration-[1.6s] ease-out"
+          className="mb-8 h-20 sm:h-28 md:h-32 lg:h-40 w-auto transition-all duration-[1.6s] ease-out"
           style={{
             opacity: entered ? 1 : 0,
             transform: entered ? "scale(1)" : "scale(0.85)",
@@ -81,7 +81,7 @@ const Index = () => {
           COMING 2026
         </h1>
         <p
-          className="cursor-default text-lg tracking-[0.04em] text-secondary-foreground transition-all duration-[1.8s] ease-out hover:scale-[1.04] sm:text-xl"
+          className="mt-3 cursor-default text-lg tracking-[0.04em] text-secondary-foreground transition-all duration-[1.8s] ease-out hover:scale-[1.04] sm:text-xl"
           style={{
             opacity: entered ? 1 : 0,
             transform: entered ? "scale(1)" : "scale(0.85)",
