@@ -60,7 +60,7 @@ const Index = () => {
         <img
           src={wxlvLogo}
           alt="WXLV"
-          className="mb-4 h-16 sm:h-20 md:h-24 lg:h-28 w-auto transition-all duration-[1.6s] ease-out"
+          className="mb-4 h-32 sm:h-40 md:h-48 lg:h-56 w-auto transition-all duration-[1.6s] ease-out"
           style={{
             opacity: entered ? 1 : 0,
             transform: entered ? "scale(1)" : "scale(0.85)",
