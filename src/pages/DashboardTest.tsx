@@ -25,10 +25,11 @@ const warningStyles: Record<WarningLevel, { label: string; cls: string; icon: ty
 const DashboardTest = () => {
   const [sortKey, setSortKey] = useState<SortKey>("rainfall");
   const [selected, setSelected] = useState<Station | null>(null);
+  const { stations, loading, error, fetchedAt } = useWxlvStations();
 
   const sorted = useMemo(
-    () => [...stations].sort((a, b) => b[sortKey] - a[sortKey]),
-    [sortKey]
+    () => [...stations].sort((a, b) => (b[sortKey] ?? 0) - (a[sortKey] ?? 0)),
+    [stations, sortKey]
   );
 
   return (
