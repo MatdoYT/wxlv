@@ -152,31 +152,37 @@ const DashboardTest = () => {
               <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Active Warnings</h2>
               <span className="text-[10px] text-muted-foreground">{warnings.length} active</span>
             </div>
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-              {warnings.map((w) => {
-                const meta = warningStyles[w.level];
-                const Icon = meta.icon;
-                return (
-                  <Link
-                    key={w.id}
-                    to={`/dashboard-test/warning/${w.id}`}
-                    className={cn(
-                      "group flex items-start gap-3 rounded-md border p-3 transition-all hover:scale-[1.01] hover:brightness-125",
-                      meta.cls
-                    )}
-                  >
-                    <Icon className="h-5 w-5 shrink-0" />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm font-semibold">{w.title}</span>
-                        <span className="shrink-0 text-[10px] uppercase tracking-wider opacity-70">{meta.label}</span>
+            {warnings.length === 0 ? (
+              <div className="rounded-md border border-border/30 bg-white/[0.02] px-3 py-4 text-center text-xs text-muted-foreground">
+                No active warnings.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+                {warnings.map((w) => {
+                  const meta = warningStyles[w.level];
+                  const Icon = meta.icon;
+                  return (
+                    <Link
+                      key={w.id}
+                      to={`/dashboard-test/warning/${w.id}`}
+                      className={cn(
+                        "group flex items-start gap-3 rounded-md border p-3 transition-all hover:scale-[1.01] hover:brightness-125",
+                        meta.cls
+                      )}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="truncate text-sm font-semibold">{w.title}</span>
+                          <span className="shrink-0 text-[10px] uppercase tracking-wider opacity-70">{meta.label}</span>
+                        </div>
+                        <div className="mt-0.5 text-[11px] opacity-70">{w.area}</div>
                       </div>
-                      <div className="mt-0.5 text-[11px] opacity-70">{w.area}</div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </section>
         </main>
       </div>
