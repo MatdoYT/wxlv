@@ -109,7 +109,7 @@ const DashboardTest = () => {
         {/* Map + warnings */}
         <main className="flex flex-1 flex-col">
           <div className="relative flex-1">
-            <LatviaMap selectedStationId={selected?.id ?? null} onSelectStation={setSelected} />
+            <LatviaMap stations={stations} selectedStationId={selected?.id ?? null} onSelectStation={setSelected} />
             {selected && (
               <div className="absolute right-4 top-4 z-[400] w-64 rounded-lg border border-border/50 bg-black/80 p-3 backdrop-blur">
                 <div className="flex items-center justify-between">
