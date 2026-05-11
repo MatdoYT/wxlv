@@ -47,7 +47,7 @@ const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {} }
         const active = s.id === selectedStationId;
         const pulsing = pulses[s.id] != null;
         return (
-          <div key={s.id}>
+          <Fragment key={s.id}>
             {pulsing && (
               <Marker
                 key={`pulse-${s.id}-${pulses[s.id]}`}
@@ -71,7 +71,7 @@ const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {} }
                 <span className="text-xs font-medium">{s.name} · {s.location}</span>
               </Tooltip>
             </CircleMarker>
-          </div>
+          </Fragment>
         );
       })}
 
