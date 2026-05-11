@@ -1,4 +1,7 @@
-import { corsHeaders } from "@supabase/supabase-js/cors";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 const CKAN = "https://data.gov.lv/dati/lv/api/action/datastore_search";
 const STATIONS_RES = "c32c7afd-0d05-44fd-8b24-1de85b4bf11d";
