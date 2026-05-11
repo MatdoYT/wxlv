@@ -5,6 +5,7 @@ import LatviaMap from "@/components/wxlv/LatviaMap";
 import wxlvLogo from "@/assets/wxlv-logo.png";
 import { warnings, type Station, type WarningLevel } from "@/data/wxlv";
 import { useWxlvStations } from "@/hooks/useWxlvStations";
+import { metricGradient } from "@/lib/wxlvGradients";
 import { cn } from "@/lib/utils";
 
 type SortKey = "temperature" | "humidity" | "windSpeed" | "rainfall";
