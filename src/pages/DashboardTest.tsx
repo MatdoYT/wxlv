@@ -40,7 +40,12 @@ const DashboardTest = () => {
           <img src={wxlvLogo} alt="WXLV" className="h-7 w-auto" />
           <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Dashboard · Test</span>
         </Link>
-        <span className="text-xs text-muted-foreground">{stations.length} stations online</span>
+        <span className="text-xs text-muted-foreground">
+          {loading ? "Loading…" : error ? "Offline" : `${stations.length} stations online`}
+          {fetchedAt && !loading && !error && (
+            <span className="ml-2 opacity-60">· {new Date(fetchedAt).toLocaleTimeString()}</span>
+          )}
+        </span>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
