@@ -5,6 +5,7 @@ import LatviaMap from "@/components/wxlv/LatviaMap";
 import wxlvLogo from "@/assets/wxlv-logo.png";
 import { warnings, type Station, type WarningLevel } from "@/data/wxlv";
 import { useWxlvStations } from "@/hooks/useWxlvStations";
+import { metricGradient } from "@/lib/wxlvGradients";
 import { cn } from "@/lib/utils";
 
 type SortKey = "temperature" | "humidity" | "windSpeed" | "rainfall";
@@ -25,7 +26,7 @@ const warningStyles: Record<WarningLevel, { label: string; cls: string; icon: ty
 const DashboardTest = () => {
   const [sortKey, setSortKey] = useState<SortKey>("rainfall");
   const [selected, setSelected] = useState<Station | null>(null);
-  const { stations, loading, error, fetchedAt } = useWxlvStations();
+  const { stations, loading, error, fetchedAt, pulses } = useWxlvStations();
 
   const sorted = useMemo(
     () => [...stations].sort((a, b) => (b[sortKey] ?? 0) - (a[sortKey] ?? 0)),
@@ -109,26 +110,34 @@ const DashboardTest = () => {
         {/* Map + warnings */}
         <main className="flex flex-1 flex-col">
           <div className="relative flex-1">
-            <LatviaMap stations={stations} selectedStationId={selected?.id ?? null} onSelectStation={setSelected} />
+            <LatviaMap stations={stations} selectedStationId={selected?.id ?? null} onSelectStation={setSelected} pulses={pulses} />
             {selected && (
-              <div className="absolute right-4 top-4 z-[400] w-64 rounded-lg border border-border/50 bg-black/80 p-3 backdrop-blur">
-                <div className="flex items-center justify-between">
+              <div className="absolute right-4 top-4 z-[400] w-[420px] rounded-xl border border-border/50 bg-black/85 p-5 backdrop-blur-md shadow-2xl animate-scale-in">
+                <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-sm font-semibold">{selected.name}</div>
-                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{selected.location}</div>
+                    <div className="text-xl font-bold tracking-tight">{selected.name}</div>
+                    <div className="mt-0.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{selected.location}</div>
                   </div>
-                  <button onClick={() => setSelected(null)} className="text-muted-foreground hover:text-foreground">×</button>
+                  <button onClick={() => setSelected(null)} className="text-2xl leading-none text-muted-foreground hover:text-foreground">×</button>
                 </div>
-                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                <div className="mt-5 grid grid-cols-2 gap-3">
                   {(Object.keys(sortMeta) as SortKey[]).map((k) => {
                     const Icon = sortMeta[k].icon;
+                    const value = selected[k] ?? 0;
                     return (
-                      <div key={k} className="rounded border border-border/30 bg-white/[0.02] px-2 py-1.5">
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Icon className="h-3 w-3" />
+                      <div
+                        key={k}
+                        className="rounded-lg border border-white/10 px-3 py-3"
+                        style={{ background: metricGradient(k, value) }}
+                      >
+                        <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-white/70">
+                          <Icon className="h-3.5 w-3.5" />
                           <span>{sortMeta[k].label}</span>
                         </div>
-                        <div className="mt-0.5 font-mono">{selected[k].toFixed(1)} {sortMeta[k].unit}</div>
+                        <div className="mt-1 font-mono text-2xl font-semibold text-white">
+                          {value.toFixed(1)}
+                          <span className="ml-1 text-sm font-normal text-white/60">{sortMeta[k].unit}</span>
+                        </div>
                       </div>
                     );
                   })}
@@ -143,31 +152,37 @@ const DashboardTest = () => {
               <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Active Warnings</h2>
               <span className="text-[10px] text-muted-foreground">{warnings.length} active</span>
             </div>
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-              {warnings.map((w) => {
-                const meta = warningStyles[w.level];
-                const Icon = meta.icon;
-                return (
-                  <Link
-                    key={w.id}
-                    to={`/dashboard-test/warning/${w.id}`}
-                    className={cn(
-                      "group flex items-start gap-3 rounded-md border p-3 transition-all hover:scale-[1.01] hover:brightness-125",
-                      meta.cls
-                    )}
-                  >
-                    <Icon className="h-5 w-5 shrink-0" />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm font-semibold">{w.title}</span>
-                        <span className="shrink-0 text-[10px] uppercase tracking-wider opacity-70">{meta.label}</span>
+            {warnings.length === 0 ? (
+              <div className="rounded-md border border-border/30 bg-white/[0.02] px-3 py-4 text-center text-xs text-muted-foreground">
+                No active warnings.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+                {warnings.map((w) => {
+                  const meta = warningStyles[w.level];
+                  const Icon = meta.icon;
+                  return (
+                    <Link
+                      key={w.id}
+                      to={`/dashboard-test/warning/${w.id}`}
+                      className={cn(
+                        "group flex items-start gap-3 rounded-md border p-3 transition-all hover:scale-[1.01] hover:brightness-125",
+                        meta.cls
+                      )}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="truncate text-sm font-semibold">{w.title}</span>
+                          <span className="shrink-0 text-[10px] uppercase tracking-wider opacity-70">{meta.label}</span>
+                        </div>
+                        <div className="mt-0.5 text-[11px] opacity-70">{w.area}</div>
                       </div>
-                      <div className="mt-0.5 text-[11px] opacity-70">{w.area}</div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </section>
         </main>
       </div>

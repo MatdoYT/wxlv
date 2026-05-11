@@ -34,35 +34,4 @@ export const stations: Station[] = [
   { id: "smt", name: "WXLV-SMT", location: "Smiltene", lat: 57.4242, lon: 25.9069, temperature: 2.7, humidity: 81, windSpeed: 5.5, rainfall: 2.3 },
 ];
 
-export const warnings: Warning[] = [
-  {
-    id: "w-001",
-    title: "Strong coastal winds",
-    level: "warning",
-    description: "Sustained winds of 11+ m/s observed along the Kurzeme coast. Loose objects may be displaced.",
-    issuedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-    lat: 56.5108,
-    lon: 21.0132,
-    area: "Liepāja region",
-  },
-  {
-    id: "w-002",
-    title: "Heavy rainfall accumulation",
-    level: "dangerous",
-    description: "Over 8mm of rain in the last 24 hours with continued precipitation expected. Risk of localized flooding.",
-    issuedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-    lat: 57.3894,
-    lon: 21.5606,
-    area: "Ventspils region",
-  },
-  {
-    id: "w-003",
-    title: "Severe storm system inbound",
-    level: "life-threatening",
-    description: "Atmospheric models indicate a severe storm system approaching from the Baltic. Wind gusts may exceed 25 m/s. Seek shelter and avoid travel.",
-    issuedAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-    lat: 56.9496,
-    lon: 24.1052,
-    area: "Rīga & surrounding areas",
-  },
-];
+export const warnings: Warning[] = [];

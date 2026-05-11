@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Station } from "@/data/wxlv";
 
@@ -15,6 +15,9 @@ export function useWxlvStations() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fetchedAt, setFetchedAt] = useState<string | null>(null);
+  const [pulses, setPulses] = useState<Record<string, number>>({});
+  const lastUpdatedRef = useRef<Record<string, string>>({});
+  const firstLoadRef = useRef(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -30,6 +33,33 @@ export function useWxlvStations() {
           windSpeed: s.windSpeed ?? 0,
           rainfall: s.rainfall ?? 0,
         }));
+
+        // Detect new updates (skip first load to avoid pulsing everything)
+        if (!firstLoadRef.current) {
+          const newPulses: Record<string, number> = {};
+          for (const s of normalized) {
+            const prev = lastUpdatedRef.current[s.id];
+            if (s.updatedAt && prev && s.updatedAt !== prev) {
+              newPulses[s.id] = Date.now();
+            }
+          }
+          if (Object.keys(newPulses).length) {
+            setPulses((p) => ({ ...p, ...newPulses }));
+            // Clear after animation
+            setTimeout(() => {
+              setPulses((p) => {
+                const next = { ...p };
+                for (const id of Object.keys(newPulses)) delete next[id];
+                return next;
+              });
+            }, 2500);
+          }
+        }
+        for (const s of normalized) {
+          if (s.updatedAt) lastUpdatedRef.current[s.id] = s.updatedAt;
+        }
+        firstLoadRef.current = false;
+
         setStations(normalized);
         setFetchedAt(data.fetchedAt);
       } catch (e) {
@@ -46,5 +76,5 @@ export function useWxlvStations() {
     };
   }, []);
 
-  return { stations, loading, error, fetchedAt };
+  return { stations, loading, error, fetchedAt, pulses };
 }
