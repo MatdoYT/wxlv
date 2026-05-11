@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
         );
         return {
           id: s.STATION_ID,
-          name: `WXLV-${s.STATION_ID.slice(0, 4)}`,
+          name: `LVGMC-${s.STATION_ID.slice(0, 4)}`,
           location: s.NAME,
           lat: Number(s.GEOGR2),
           lon: Number(s.GEOGR1),
@@ -72,7 +72,8 @@ Deno.serve(async (req) => {
           tempMin: pick("HATMN"),
           updatedAt: lastTime,
         };
-      });
+      })
+      .filter((s) => s.temperature != null && s.temperature !== 0);
 
     return new Response(JSON.stringify({ stations, fetchedAt: new Date().toISOString() }), {
       headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },
