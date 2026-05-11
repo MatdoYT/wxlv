@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { ArrowDownUp, CloudRain, Droplets, Thermometer, Wind, AlertTriangle, Skull, ShieldAlert } from "lucide-react";
 import LatviaMap from "@/components/wxlv/LatviaMap";
 import wxlvLogo from "@/assets/wxlv-logo.png";
-import { stations, warnings, type Station, type WarningLevel } from "@/data/wxlv";
+import { warnings, type Station, type WarningLevel } from "@/data/wxlv";
+import { useWxlvStations } from "@/hooks/useWxlvStations";
 import { cn } from "@/lib/utils";
 
 type SortKey = "temperature" | "humidity" | "windSpeed" | "rainfall";
@@ -24,10 +25,11 @@ const warningStyles: Record<WarningLevel, { label: string; cls: string; icon: ty
 const DashboardTest = () => {
   const [sortKey, setSortKey] = useState<SortKey>("rainfall");
   const [selected, setSelected] = useState<Station | null>(null);
+  const { stations, loading, error, fetchedAt } = useWxlvStations();
 
   const sorted = useMemo(
-    () => [...stations].sort((a, b) => b[sortKey] - a[sortKey]),
-    [sortKey]
+    () => [...stations].sort((a, b) => (b[sortKey] ?? 0) - (a[sortKey] ?? 0)),
+    [stations, sortKey]
   );
 
   return (
@@ -38,7 +40,12 @@ const DashboardTest = () => {
           <img src={wxlvLogo} alt="WXLV" className="h-7 w-auto" />
           <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Dashboard · Test</span>
         </Link>
-        <span className="text-xs text-muted-foreground">{stations.length} stations online</span>
+        <span className="text-xs text-muted-foreground">
+          {loading ? "Loading…" : error ? "Offline" : `${stations.length} stations online`}
+          {fetchedAt && !loading && !error && (
+            <span className="ml-2 opacity-60">· {new Date(fetchedAt).toLocaleTimeString()}</span>
+          )}
+        </span>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
@@ -102,7 +109,7 @@ const DashboardTest = () => {
         {/* Map + warnings */}
         <main className="flex flex-1 flex-col">
           <div className="relative flex-1">
-            <LatviaMap selectedStationId={selected?.id ?? null} onSelectStation={setSelected} />
+            <LatviaMap stations={stations} selectedStationId={selected?.id ?? null} onSelectStation={setSelected} />
             {selected && (
               <div className="absolute right-4 top-4 z-[400] w-64 rounded-lg border border-border/50 bg-black/80 p-3 backdrop-blur">
                 <div className="flex items-center justify-between">

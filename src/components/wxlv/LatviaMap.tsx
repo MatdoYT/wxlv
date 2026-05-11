@@ -2,17 +2,18 @@ import { useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { stations, warnings, type Station } from "@/data/wxlv";
+import { warnings, type Station } from "@/data/wxlv";
 
 // Fix default icon paths (not used here but prevents warnings)
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl;
 
 interface Props {
+  stations: Station[];
   selectedStationId?: string | null;
   onSelectStation?: (s: Station) => void;
 }
 
-const LatviaMap = ({ selectedStationId, onSelectStation }: Props) => {
+const LatviaMap = ({ stations, selectedStationId, onSelectStation }: Props) => {
   useEffect(() => {
     // ensure container resizes correctly
     window.dispatchEvent(new Event("resize"));
