@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowDownUp, CloudRain, Droplets, Thermometer, Wind, AlertTriangle, Skull, ShieldAlert } from "lucide-react";
+import { ArrowDown, ArrowUp, CloudRain, Droplets, Thermometer, Wind, AlertTriangle, Skull, ShieldAlert, ChevronDown } from "lucide-react";
 import LatviaMap from "@/components/wxlv/LatviaMap";
 import wxlvLogo from "@/assets/wxlv-logo.png";
 import { warnings, type Station, type WarningLevel } from "@/data/wxlv";
@@ -25,12 +25,27 @@ const warningStyles: Record<WarningLevel, { label: string; cls: string; icon: ty
 
 const DashboardTest = () => {
   const [sortKey, setSortKey] = useState<SortKey>("rainfall");
+  const [sortDir, setSortDir] = useState<"desc" | "asc">("desc");
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<Station | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
   const { stations, loading, error, fetchedAt, pulses } = useWxlvStations();
 
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
   const sorted = useMemo(
-    () => [...stations].sort((a, b) => (b[sortKey] ?? 0) - (a[sortKey] ?? 0)),
-    [stations, sortKey]
+    () => [...stations].sort((a, b) => {
+      const diff = (b[sortKey] ?? 0) - (a[sortKey] ?? 0);
+      return sortDir === "desc" ? diff : -diff;
+    }),
+    [stations, sortKey, sortDir]
   );
 
   return (
@@ -54,23 +69,46 @@ const DashboardTest = () => {
         <aside className="flex w-[340px] flex-col border-r border-border/40 bg-black/60">
           <div className="flex items-center justify-between border-b border-border/40 px-4 py-3">
             <h2 className="text-sm font-semibold tracking-wide">Stations</h2>
-            <div className="flex items-center gap-1">
-              <ArrowDownUp className="h-3 w-3 text-muted-foreground" />
-              <select
-                value={sortKey}
-                onChange={(e) => setSortKey(e.target.value as SortKey)}
-                className="bg-transparent text-xs text-muted-foreground outline-none"
+            <div ref={sortRef} className="relative flex items-center gap-1">
+              <button
+                onClick={() => setSortOpen((o) => !o)}
+                className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:bg-white/[0.08] hover:text-foreground"
               >
-                {(Object.keys(sortMeta) as SortKey[]).map((k) => (
-                  <option key={k} value={k} className="bg-black">
-                    Sort: {sortMeta[k].label}
-                  </option>
-                ))}
-              </select>
+                <span>{sortMeta[sortKey].label}</span>
+                <ChevronDown className={cn("h-3 w-3 transition-transform", sortOpen && "rotate-180")} />
+              </button>
+              <button
+                onClick={() => setSortDir((d) => (d === "desc" ? "asc" : "desc"))}
+                title={sortDir === "desc" ? "Descending" : "Ascending"}
+                className="flex h-[26px] w-[26px] items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-muted-foreground transition-colors hover:bg-white/[0.08] hover:text-foreground"
+              >
+                {sortDir === "desc" ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />}
+              </button>
+              {sortOpen && (
+                <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-40 overflow-hidden rounded-md border border-white/10 bg-black/95 shadow-2xl backdrop-blur-md animate-scale-in">
+                  {(Object.keys(sortMeta) as SortKey[]).map((k) => {
+                    const Icon = sortMeta[k].icon;
+                    return (
+                      <button
+                        key={k}
+                        onClick={() => { setSortKey(k); setSortOpen(false); }}
+                        className={cn(
+                          "flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors hover:bg-white/[0.08]",
+                          sortKey === k ? "text-foreground" : "text-muted-foreground"
+                        )}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        <span>{sortMeta[k].label}</span>
+                        {sortKey === k && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 
-          <ul className="flex-1 overflow-y-auto">
+          <ul className="wxlv-scroll flex-1 overflow-y-auto">
             {sorted.map((s) => {
               const isActive = selected?.id === s.id;
               const SortIcon = sortMeta[sortKey].icon;
@@ -78,6 +116,8 @@ const DashboardTest = () => {
                 <li key={s.id}>
                   <button
                     onClick={() => setSelected(s)}
+                    onMouseEnter={() => setHovered(s.id)}
+                    onMouseLeave={() => setHovered((h) => (h === s.id ? null : h))}
                     className={cn(
                       "w-full border-b border-border/20 px-4 py-3 text-left transition-colors hover:bg-white/5",
                       isActive && "bg-white/[0.06]"
@@ -110,7 +150,7 @@ const DashboardTest = () => {
         {/* Map + warnings */}
         <main className="flex flex-1 flex-col">
           <div className="relative flex-1">
-            <LatviaMap stations={stations} selectedStationId={selected?.id ?? null} onSelectStation={setSelected} pulses={pulses} metric={sortKey} />
+            <LatviaMap stations={stations} selectedStationId={selected?.id ?? null} hoveredStationId={hovered} onSelectStation={setSelected} pulses={pulses} metric={sortKey} />
             {selected && (
               <div className="absolute right-4 top-4 z-[400] w-[420px] rounded-xl border border-border/50 bg-black/85 p-5 backdrop-blur-md shadow-2xl animate-scale-in">
                 <div className="flex items-start justify-between">

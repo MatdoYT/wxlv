@@ -114,6 +114,36 @@ All colors MUST be HSL.
   100% { transform: scale(5);   opacity: 0; }
 }
 
+/* WXLV hover radio signal */
+.wxlv-radio-ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  border: 1.5px solid hsl(0 0% 100% / 0.85);
+  background: hsl(0 0% 100% / 0.06);
+  animation: wxlv-radio 1.6s ease-out infinite;
+  transform-origin: center;
+}
+.wxlv-radio-ring--delay { animation-delay: 0.8s; }
+@keyframes wxlv-radio {
+  0%   { transform: scale(0.5); opacity: 0.9; }
+  80%  { opacity: 0.15; }
+  100% { transform: scale(4.5); opacity: 0; }
+}
+
+/* WXLV custom scrollbar */
+.wxlv-scroll::-webkit-scrollbar { width: 6px; }
+.wxlv-scroll::-webkit-scrollbar-track { background: transparent; }
+.wxlv-scroll::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 100% / 0.08);
+  border-radius: 9999px;
+}
+.wxlv-scroll::-webkit-scrollbar-thumb:hover { background: hsl(0 0% 100% / 0.18); }
+.wxlv-scroll { scrollbar-width: thin; scrollbar-color: hsl(0 0% 100% / 0.1) transparent; }
+
 /* WXLV station marker */
 .wxlv-marker-icon { background: transparent !important; border: none !important; }
 .wxlv-marker {

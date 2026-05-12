@@ -13,6 +13,13 @@ const pulseIcon = L.divIcon({
   iconAnchor: [10, 10],
 });
 
+const radioPulseIcon = L.divIcon({
+  className: "wxlv-pulse-icon",
+  html: `<span class="wxlv-radio-ring"></span><span class="wxlv-radio-ring wxlv-radio-ring--delay"></span>`,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
+
 export type MapMetric = "temperature" | "humidity" | "windSpeed" | "rainfall";
 
 const formatMetric = (m: MapMetric, v: number): string => {
@@ -28,12 +35,13 @@ const formatMetric = (m: MapMetric, v: number): string => {
 interface Props {
   stations: Station[];
   selectedStationId?: string | null;
+  hoveredStationId?: string | null;
   onSelectStation?: (s: Station) => void;
   pulses?: Record<string, number>;
   metric?: MapMetric;
 }
 
-const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {}, metric = "temperature" }: Props) => {
+const LatviaMap = ({ stations, selectedStationId, hoveredStationId, onSelectStation, pulses = {}, metric = "temperature" }: Props) => {
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));
   }, []);
@@ -78,6 +86,7 @@ const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {}, 
 
       {stations.map((s) => {
         const pulsing = pulses[s.id] != null;
+        const hovering = hoveredStationId === s.id;
         return (
           <Fragment key={s.id}>
             {pulsing && (
@@ -85,6 +94,13 @@ const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {}, 
                 key={`pulse-${s.id}-${pulses[s.id]}`}
                 position={[s.lat, s.lon]}
                 icon={pulseIcon}
+                interactive={false}
+              />
+            )}
+            {hovering && (
+              <Marker
+                position={[s.lat, s.lon]}
+                icon={radioPulseIcon}
                 interactive={false}
               />
             )}
