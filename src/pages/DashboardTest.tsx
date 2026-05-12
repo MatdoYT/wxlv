@@ -108,7 +108,7 @@ const DashboardTest = () => {
             </div>
           </div>
 
-          <ul className="flex-1 overflow-y-auto">
+          <ul className="wxlv-scroll flex-1 overflow-y-auto">
             {sorted.map((s) => {
               const isActive = selected?.id === s.id;
               const SortIcon = sortMeta[sortKey].icon;
@@ -116,6 +116,8 @@ const DashboardTest = () => {
                 <li key={s.id}>
                   <button
                     onClick={() => setSelected(s)}
+                    onMouseEnter={() => setHovered(s.id)}
+                    onMouseLeave={() => setHovered((h) => (h === s.id ? null : h))}
                     className={cn(
                       "w-full border-b border-border/20 px-4 py-3 text-left transition-colors hover:bg-white/5",
                       isActive && "bg-white/[0.06]"
