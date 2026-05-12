@@ -121,16 +121,16 @@ All colors MUST be HSL.
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 9px;
-  border-radius: 8px;
+  padding: 5px 11px;
+  border-radius: 10px;
   font: 600 11px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   color: hsl(0 0% 96%);
-  background: linear-gradient(160deg, hsl(0 0% 18%) 0%, hsl(0 0% 72%) 50%, hsl(0 0% 14%) 100%);
-  border: 1px solid hsl(0 0% 6% / 0.9);
+  background: linear-gradient(160deg, #333333 0%, #2E2E2E 50%, #141414 100%);
+  border: 2px solid hsl(0 0% 16% / 0.9);
   box-shadow:
-    0 1px 0 hsl(0 0% 100% / 0.08) inset,
-    0 0 0 1px hsl(0 0% 100% / 0.04),
-    0 4px 10px hsl(0 0% 0% / 0.55);
+    0 1px 0 hsl(0 0% 100% / 0.06) inset,
+    0 0 0 1px hsl(0 0% 100% / 0.03),
+    0 4px 12px hsl(0 0% 0% / 0.6);
   white-space: nowrap;
   letter-spacing: 0.01em;
   text-shadow: 0 1px 2px hsl(0 0% 0% / 0.75);
@@ -140,13 +140,17 @@ All colors MUST be HSL.
 .wxlv-marker:hover {
   transform: translateY(-1px) scale(1.05);
   box-shadow:
-    0 1px 0 hsl(0 0% 100% / 0.12) inset,
-    0 0 0 1px hsl(0 0% 100% / 0.08),
+    0 1px 0 hsl(0 0% 100% / 0.1) inset,
+    0 0 0 1px hsl(0 0% 100% / 0.06),
     0 6px 14px hsl(0 0% 0% / 0.7);
 }
 .wxlv-marker--active {
-  background: linear-gradient(160deg, hsl(160 50% 22%) 0%, hsl(160 55% 68%) 50%, hsl(160 55% 18%) 100%);
-  border-color: hsl(160 60% 10%);
+  background: linear-gradient(160deg, #4a4a4a 0%, #333333 50%, #1a1a1a 100%);
+  animation: wxlv-breathe 2.8s ease-in-out infinite;
+}
+@keyframes wxlv-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
 }
 .wxlv-marker__value { font-variant-numeric: tabular-nums; }
 .wxlv-marker__name {
