@@ -44,7 +44,15 @@ Deno.serve(async (req) => {
       }
     });
 
-    const stations = stationsRaw
+    const slugify = (loc: string) =>
+      (loc || "STAT")
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^A-Za-z]/g, "")
+        .toUpperCase()
+        .slice(0, 4)
+        .padEnd(4, "X");
+
+    const filtered = stationsRaw
       .filter((s) => s.GEOGR1 && s.GEOGR2 && new Date(s.END_DATE).getFullYear() > 2020)
       .map((s) => {
         const obs = latest[s.STATION_ID] || {};
@@ -58,7 +66,6 @@ Deno.serve(async (req) => {
         );
         return {
           id: s.STATION_ID,
-          name: `LVGMC-${s.STATION_ID.slice(0, 4)}`,
           location: s.NAME,
           lat: Number(s.GEOGR2),
           lon: Number(s.GEOGR1),
@@ -74,6 +81,13 @@ Deno.serve(async (req) => {
         };
       })
       .filter((s) => s.temperature != null && s.temperature !== 0);
+
+    const nameCounts: Record<string, number> = {};
+    const stations = filtered.map((s) => {
+      const slug = slugify(s.location);
+      const n = (nameCounts[slug] = (nameCounts[slug] || 0) + 1);
+      return { ...s, name: `LVGMC-${slug}${n > 1 ? n : ""}` };
+    });
 
     return new Response(JSON.stringify({ stations, fetchedAt: new Date().toISOString() }), {
       headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },

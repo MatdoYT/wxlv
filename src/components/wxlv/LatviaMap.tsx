@@ -1,10 +1,9 @@
-import { Fragment, useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Tooltip, Marker } from "react-leaflet";
+import { Fragment, useEffect, useMemo } from "react";
+import { MapContainer, TileLayer, CircleMarker, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { warnings, type Station } from "@/data/wxlv";
 
-// Fix default icon paths (not used here but prevents warnings)
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl;
 
 const pulseIcon = L.divIcon({
@@ -14,17 +13,51 @@ const pulseIcon = L.divIcon({
   iconAnchor: [10, 10],
 });
 
+export type MapMetric = "temperature" | "humidity" | "windSpeed" | "rainfall";
+
+const formatMetric = (m: MapMetric, v: number): string => {
+  if (v == null || isNaN(v)) return "—";
+  switch (m) {
+    case "temperature": return `${Math.round(v)}°`;
+    case "humidity": return `${Math.round(v)}%`;
+    case "windSpeed": return `${Math.round(v)}m/s`;
+    case "rainfall": return `${v.toFixed(1)}mm`;
+  }
+};
+
 interface Props {
   stations: Station[];
   selectedStationId?: string | null;
   onSelectStation?: (s: Station) => void;
   pulses?: Record<string, number>;
+  metric?: MapMetric;
 }
 
-const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {} }: Props) => {
+const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {}, metric = "temperature" }: Props) => {
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));
   }, []);
+
+  const stationIcons = useMemo(() => {
+    const map: Record<string, L.DivIcon> = {};
+    for (const s of stations) {
+      const active = s.id === selectedStationId;
+      const value = (s as any)[metric] as number;
+      const label = formatMetric(metric, value);
+      const html = `
+        <div class="wxlv-marker ${active ? "wxlv-marker--active" : ""}">
+          <span class="wxlv-marker__value">${label}</span>
+          <span class="wxlv-marker__name">${s.name}</span>
+        </div>`;
+      map[s.id] = L.divIcon({
+        className: "wxlv-marker-icon",
+        html,
+        iconSize: [64, 30],
+        iconAnchor: [32, 15],
+      });
+    }
+    return map;
+  }, [stations, selectedStationId, metric]);
 
   return (
     <MapContainer
@@ -44,7 +77,6 @@ const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {} }
       />
 
       {stations.map((s) => {
-        const active = s.id === selectedStationId;
         const pulsing = pulses[s.id] != null;
         return (
           <Fragment key={s.id}>
@@ -56,21 +88,11 @@ const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {} }
                 interactive={false}
               />
             )}
-            <CircleMarker
-              center={[s.lat, s.lon]}
-              radius={active ? 9 : 6}
-              pathOptions={{
-                color: active ? "hsl(160 70% 60%)" : "hsl(0 0% 90%)",
-                fillColor: active ? "hsl(160 70% 50%)" : "hsl(0 0% 80%)",
-                fillOpacity: 0.85,
-                weight: 2,
-              }}
+            <Marker
+              position={[s.lat, s.lon]}
+              icon={stationIcons[s.id]}
               eventHandlers={{ click: () => onSelectStation?.(s) }}
-            >
-              <Tooltip direction="top" offset={[0, -6]} opacity={1}>
-                <span className="text-xs font-medium">{s.name} · {s.location}</span>
-              </Tooltip>
-            </CircleMarker>
+            />
           </Fragment>
         );
       })}

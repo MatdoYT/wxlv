@@ -113,3 +113,59 @@ All colors MUST be HSL.
   0%   { transform: scale(0.4); opacity: 1; }
   100% { transform: scale(5);   opacity: 0; }
 }
+
+/* WXLV station marker */
+.wxlv-marker-icon { background: transparent !important; border: none !important; }
+.wxlv-marker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 9px;
+  border-radius: 8px;
+  font: 600 11px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: hsl(0 0% 96%);
+  background: linear-gradient(160deg, hsl(0 0% 18%) 0%, hsl(0 0% 72%) 50%, hsl(0 0% 14%) 100%);
+  border: 1px solid hsl(0 0% 6% / 0.9);
+  box-shadow:
+    0 1px 0 hsl(0 0% 100% / 0.08) inset,
+    0 0 0 1px hsl(0 0% 100% / 0.04),
+    0 4px 10px hsl(0 0% 0% / 0.55);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 2px hsl(0 0% 0% / 0.75);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  cursor: pointer;
+}
+.wxlv-marker:hover {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow:
+    0 1px 0 hsl(0 0% 100% / 0.12) inset,
+    0 0 0 1px hsl(0 0% 100% / 0.08),
+    0 6px 14px hsl(0 0% 0% / 0.7);
+}
+.wxlv-marker--active {
+  background: linear-gradient(160deg, hsl(160 50% 22%) 0%, hsl(160 55% 68%) 50%, hsl(160 55% 18%) 100%);
+  border-color: hsl(160 60% 10%);
+}
+.wxlv-marker__value { font-variant-numeric: tabular-nums; }
+.wxlv-marker__name {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(0 0% 75%);
+  background: hsl(0 0% 0% / 0.6);
+  padding: 1px 5px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+  white-space: nowrap;
+}
+.wxlv-marker:hover .wxlv-marker__name,
+.wxlv-marker--active .wxlv-marker__name { opacity: 1; }
