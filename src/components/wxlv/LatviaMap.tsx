@@ -13,6 +13,13 @@ const pulseIcon = L.divIcon({
   iconAnchor: [10, 10],
 });
 
+const radioPulseIcon = L.divIcon({
+  className: "wxlv-pulse-icon",
+  html: `<span class="wxlv-radio-ring"></span><span class="wxlv-radio-ring wxlv-radio-ring--delay"></span>`,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
+
 export type MapMetric = "temperature" | "humidity" | "windSpeed" | "rainfall";
 
 const formatMetric = (m: MapMetric, v: number): string => {
