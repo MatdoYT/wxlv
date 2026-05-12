@@ -35,12 +35,13 @@ const formatMetric = (m: MapMetric, v: number): string => {
 interface Props {
   stations: Station[];
   selectedStationId?: string | null;
+  hoveredStationId?: string | null;
   onSelectStation?: (s: Station) => void;
   pulses?: Record<string, number>;
   metric?: MapMetric;
 }
 
-const LatviaMap = ({ stations, selectedStationId, onSelectStation, pulses = {}, metric = "temperature" }: Props) => {
+const LatviaMap = ({ stations, selectedStationId, hoveredStationId, onSelectStation, pulses = {}, metric = "temperature" }: Props) => {
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));
   }, []);
