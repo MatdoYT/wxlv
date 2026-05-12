@@ -86,6 +86,7 @@ const LatviaMap = ({ stations, selectedStationId, hoveredStationId, onSelectStat
 
       {stations.map((s) => {
         const pulsing = pulses[s.id] != null;
+        const hovering = hoveredStationId === s.id;
         return (
           <Fragment key={s.id}>
             {pulsing && (
@@ -93,6 +94,13 @@ const LatviaMap = ({ stations, selectedStationId, hoveredStationId, onSelectStat
                 key={`pulse-${s.id}-${pulses[s.id]}`}
                 position={[s.lat, s.lon]}
                 icon={pulseIcon}
+                interactive={false}
+              />
+            )}
+            {hovering && (
+              <Marker
+                position={[s.lat, s.lon]}
+                icon={radioPulseIcon}
                 interactive={false}
               />
             )}
