@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowDownUp, CloudRain, Droplets, Thermometer, Wind, AlertTriangle, Skull, ShieldAlert } from "lucide-react";
+import { ArrowDown, ArrowUp, CloudRain, Droplets, Thermometer, Wind, AlertTriangle, Skull, ShieldAlert, ChevronDown } from "lucide-react";
 import LatviaMap from "@/components/wxlv/LatviaMap";
 import wxlvLogo from "@/assets/wxlv-logo.png";
 import { warnings, type Station, type WarningLevel } from "@/data/wxlv";
