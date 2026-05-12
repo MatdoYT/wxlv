@@ -69,19 +69,42 @@ const DashboardTest = () => {
         <aside className="flex w-[340px] flex-col border-r border-border/40 bg-black/60">
           <div className="flex items-center justify-between border-b border-border/40 px-4 py-3">
             <h2 className="text-sm font-semibold tracking-wide">Stations</h2>
-            <div className="flex items-center gap-1">
-              <ArrowDownUp className="h-3 w-3 text-muted-foreground" />
-              <select
-                value={sortKey}
-                onChange={(e) => setSortKey(e.target.value as SortKey)}
-                className="bg-transparent text-xs text-muted-foreground outline-none"
+            <div ref={sortRef} className="relative flex items-center gap-1">
+              <button
+                onClick={() => setSortOpen((o) => !o)}
+                className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:bg-white/[0.08] hover:text-foreground"
               >
-                {(Object.keys(sortMeta) as SortKey[]).map((k) => (
-                  <option key={k} value={k} className="bg-black">
-                    Sort: {sortMeta[k].label}
-                  </option>
-                ))}
-              </select>
+                <span>{sortMeta[sortKey].label}</span>
+                <ChevronDown className={cn("h-3 w-3 transition-transform", sortOpen && "rotate-180")} />
+              </button>
+              <button
+                onClick={() => setSortDir((d) => (d === "desc" ? "asc" : "desc"))}
+                title={sortDir === "desc" ? "Descending" : "Ascending"}
+                className="flex h-[26px] w-[26px] items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-muted-foreground transition-colors hover:bg-white/[0.08] hover:text-foreground"
+              >
+                {sortDir === "desc" ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />}
+              </button>
+              {sortOpen && (
+                <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-40 overflow-hidden rounded-md border border-white/10 bg-black/95 shadow-2xl backdrop-blur-md animate-scale-in">
+                  {(Object.keys(sortMeta) as SortKey[]).map((k) => {
+                    const Icon = sortMeta[k].icon;
+                    return (
+                      <button
+                        key={k}
+                        onClick={() => { setSortKey(k); setSortOpen(false); }}
+                        className={cn(
+                          "flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors hover:bg-white/[0.08]",
+                          sortKey === k ? "text-foreground" : "text-muted-foreground"
+                        )}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        <span>{sortMeta[k].label}</span>
+                        {sortKey === k && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 
