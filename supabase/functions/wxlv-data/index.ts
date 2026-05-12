@@ -44,6 +44,18 @@ Deno.serve(async (req) => {
       }
     });
 
+    const nameCounts: Record<string, number> = {};
+    const buildName = (loc: string) => {
+      const slug = (loc || "STAT")
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^A-Za-z]/g, "")
+        .toUpperCase()
+        .slice(0, 4)
+        .padEnd(4, "X");
+      const n = (nameCounts[slug] = (nameCounts[slug] || 0) + 1);
+      return `LVGMC-${slug}${n > 1 ? n : ""}`;
+    };
+
     const stations = stationsRaw
       .filter((s) => s.GEOGR1 && s.GEOGR2 && new Date(s.END_DATE).getFullYear() > 2020)
       .map((s) => {
@@ -58,7 +70,7 @@ Deno.serve(async (req) => {
         );
         return {
           id: s.STATION_ID,
-          name: `LVGMC-${s.STATION_ID.slice(0, 4)}`,
+          name: buildName(s.NAME),
           location: s.NAME,
           lat: Number(s.GEOGR2),
           lon: Number(s.GEOGR1),
