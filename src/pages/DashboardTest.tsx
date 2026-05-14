@@ -30,6 +30,8 @@ const DashboardTest = () => {
   const sortRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<Station | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [showLV, setShowLV] = useState(true);
+  const [showEE, setShowEE] = useState(false);
   const { stations, loading, error, fetchedAt, pulses } = useWxlvStations();
 
   useEffect(() => {
