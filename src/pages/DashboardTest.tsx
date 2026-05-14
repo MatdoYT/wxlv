@@ -45,19 +45,22 @@ const DashboardTest = () => {
   const visibleStations = useMemo(
     () => stations.filter((s) => {
       const c = (s as any).country;
-      if (c === "EE") return showEE;
+      if (c === "EE") {
+        if (!showEE) return false;
+        // Drop Estonian stations missing humidity or wind data
+        if ((s.humidity ?? 0) <= 0 || (s.windSpeed ?? 0) <= 0) return false;
+        return true;
+      }
       return showLV; // LV or undefined
     }),
     [stations, showLV, showEE]
   );
 
   const sorted = useMemo(
-    () => visibleStations
-      .filter((s) => (s[sortKey] ?? 0) > 0)
-      .sort((a, b) => {
-        const diff = (b[sortKey] ?? 0) - (a[sortKey] ?? 0);
-        return sortDir === "desc" ? diff : -diff;
-      }),
+    () => [...visibleStations].sort((a, b) => {
+      const diff = (b[sortKey] ?? 0) - (a[sortKey] ?? 0);
+      return sortDir === "desc" ? diff : -diff;
+    }),
     [visibleStations, sortKey, sortDir]
   );
 
