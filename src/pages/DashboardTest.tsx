@@ -52,10 +52,12 @@ const DashboardTest = () => {
   );
 
   const sorted = useMemo(
-    () => [...visibleStations].sort((a, b) => {
-      const diff = (b[sortKey] ?? 0) - (a[sortKey] ?? 0);
-      return sortDir === "desc" ? diff : -diff;
-    }),
+    () => visibleStations
+      .filter((s) => (s[sortKey] ?? 0) > 0)
+      .sort((a, b) => {
+        const diff = (b[sortKey] ?? 0) - (a[sortKey] ?? 0);
+        return sortDir === "desc" ? diff : -diff;
+      }),
     [visibleStations, sortKey, sortDir]
   );
 
