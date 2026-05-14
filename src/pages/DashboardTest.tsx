@@ -178,7 +178,7 @@ const DashboardTest = () => {
                   <button onClick={() => setSelected(null)} className="text-2xl leading-none text-muted-foreground hover:text-foreground">×</button>
                 </div>
                 <div className="mt-5 grid grid-cols-2 gap-3">
-                  {(Object.keys(sortMeta) as SortKey[]).map((k) => {
+                  {(Object.keys(sortMeta) as SortKey[]).filter((k) => (selected[k] ?? 0) > 0).map((k) => {
                     const Icon = sortMeta[k].icon;
                     const value = selected[k] ?? 0;
                     return (
