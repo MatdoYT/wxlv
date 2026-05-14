@@ -45,23 +45,29 @@ const DashboardTest = () => {
   const visibleStations = useMemo(
     () => stations.filter((s) => {
       const c = (s as any).country;
-      if (c === "EE") {
-        if (!showEE) return false;
-        // Drop Estonian stations missing humidity or wind data
-        if ((s.humidity ?? 0) <= 0 || (s.windSpeed ?? 0) <= 0) return false;
-        return true;
-      }
+      if (c === "EE") return showEE;
       return showLV; // LV or undefined
     }),
     [stations, showLV, showEE]
   );
 
+  const metricVisibleStations = useMemo(
+    () => visibleStations.filter((s) => {
+      const c = (s as any).country;
+      if (c !== "EE") return true;
+      if (sortKey === "humidity") return (s.humidity ?? 0) > 0;
+      if (sortKey === "windSpeed") return (s.windSpeed ?? 0) > 0;
+      return true;
+    }),
+    [visibleStations, sortKey]
+  );
+
   const sorted = useMemo(
-    () => [...visibleStations].sort((a, b) => {
+    () => [...metricVisibleStations].sort((a, b) => {
       const diff = (b[sortKey] ?? 0) - (a[sortKey] ?? 0);
       return sortDir === "desc" ? diff : -diff;
     }),
-    [visibleStations, sortKey, sortDir]
+    [metricVisibleStations, sortKey, sortDir]
   );
 
   return (
@@ -166,7 +172,7 @@ const DashboardTest = () => {
         {/* Map + warnings */}
         <main className="flex flex-1 flex-col">
           <div className="relative flex-1">
-            <LatviaMap stations={visibleStations} selectedStationId={selected?.id ?? null} hoveredStationId={hovered} onSelectStation={setSelected} pulses={pulses} metric={sortKey} />
+            <LatviaMap stations={metricVisibleStations} selectedStationId={selected?.id ?? null} hoveredStationId={hovered} onSelectStation={setSelected} pulses={pulses} metric={sortKey} />
             <div className="absolute bottom-4 right-4 z-[400] flex gap-1.5 rounded-lg border border-white/10 bg-black/80 p-1 backdrop-blur-md shadow-2xl">
               <button onClick={() => setShowLV((v) => !v)} className={cn("rounded-md px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors", showLV ? "bg-white/[0.12] text-foreground" : "text-muted-foreground hover:bg-white/[0.05] hover:text-foreground")}>Latvia</button>
               <button onClick={() => setShowEE((v) => !v)} className={cn("rounded-md px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors", showEE ? "bg-white/[0.12] text-foreground" : "text-muted-foreground hover:bg-white/[0.05] hover:text-foreground")}>Estonia</button>
@@ -181,7 +187,10 @@ const DashboardTest = () => {
                   <button onClick={() => setSelected(null)} className="text-2xl leading-none text-muted-foreground hover:text-foreground">×</button>
                 </div>
                 <div className="mt-5 grid grid-cols-2 gap-3">
-                  {(Object.keys(sortMeta) as SortKey[]).filter((k) => (selected[k] ?? 0) > 0).map((k) => {
+                  {(Object.keys(sortMeta) as SortKey[]).filter((k) => {
+                    const c = (selected as any).country;
+                    return !(c === "EE" && (k === "humidity" || k === "windSpeed") && (selected[k] ?? 0) <= 0);
+                  }).map((k) => {
                     const Icon = sortMeta[k].icon;
                     const value = selected[k] ?? 0;
                     return (
