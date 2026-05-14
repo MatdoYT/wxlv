@@ -83,11 +83,46 @@ Deno.serve(async (req) => {
       .filter((s) => s.temperature != null && s.temperature !== 0);
 
     const nameCounts: Record<string, number> = {};
-    const stations = filtered.map((s) => {
+    const lvStations = filtered.map((s) => {
       const slug = slugify(s.location);
       const n = (nameCounts[slug] = (nameCounts[slug] || 0) + 1);
-      return { ...s, name: `LVGMC-${slug}${n > 1 ? n : ""}` };
+      return { ...s, country: "LV" as const, name: `LVGMC-${slug}${n > 1 ? n : ""}` };
     });
+
+    // Estonia
+    let eeStations: any[] = [];
+    try {
+      const r = await fetch("https://ilmateenistus-datafeed.wxlv.net");
+      if (r.ok) {
+        const j = await r.json();
+        const eeCounts: Record<string, number> = {};
+        eeStations = (j.stations || [])
+          .filter((s: any) => s.latitude && s.longitude && s.temperature != null)
+          .map((s: any) => {
+            const slug = slugify(s.name);
+            const n = (eeCounts[slug] = (eeCounts[slug] || 0) + 1);
+            return {
+              id: `ee-${s.wmocode ?? slug + n}`,
+              location: s.name,
+              lat: s.latitude,
+              lon: s.longitude,
+              elevation: 0,
+              temperature: s.temperature,
+              humidity: s.humidity,
+              windSpeed: s.wind_speed,
+              windGust: s.wind_gust,
+              rainfall: s.precipitation,
+              tempMax: null,
+              tempMin: null,
+              updatedAt: j.updated,
+              country: "EE" as const,
+              name: `EESTIILM-${slug}${n > 1 ? n : ""}`,
+            };
+          });
+      }
+    } catch (_) { /* ignore */ }
+
+    const stations = [...lvStations, ...eeStations];
 
     return new Response(JSON.stringify({ stations, fetchedAt: new Date().toISOString() }), {
       headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },

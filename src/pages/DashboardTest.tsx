@@ -30,6 +30,8 @@ const DashboardTest = () => {
   const sortRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<Station | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [showLV, setShowLV] = useState(true);
+  const [showEE, setShowEE] = useState(false);
   const { stations, loading, error, fetchedAt, pulses } = useWxlvStations();
 
   useEffect(() => {
@@ -40,12 +42,21 @@ const DashboardTest = () => {
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
+  const visibleStations = useMemo(
+    () => stations.filter((s) => {
+      const c = (s as any).country;
+      if (c === "EE") return showEE;
+      return showLV; // LV or undefined
+    }),
+    [stations, showLV, showEE]
+  );
+
   const sorted = useMemo(
-    () => [...stations].sort((a, b) => {
+    () => [...visibleStations].sort((a, b) => {
       const diff = (b[sortKey] ?? 0) - (a[sortKey] ?? 0);
       return sortDir === "desc" ? diff : -diff;
     }),
-    [stations, sortKey, sortDir]
+    [visibleStations, sortKey, sortDir]
   );
 
   return (
@@ -150,7 +161,11 @@ const DashboardTest = () => {
         {/* Map + warnings */}
         <main className="flex flex-1 flex-col">
           <div className="relative flex-1">
-            <LatviaMap stations={stations} selectedStationId={selected?.id ?? null} hoveredStationId={hovered} onSelectStation={setSelected} pulses={pulses} metric={sortKey} />
+            <LatviaMap stations={visibleStations} selectedStationId={selected?.id ?? null} hoveredStationId={hovered} onSelectStation={setSelected} pulses={pulses} metric={sortKey} />
+            <div className="absolute bottom-4 right-4 z-[400] flex gap-1.5 rounded-lg border border-white/10 bg-black/80 p-1 backdrop-blur-md shadow-2xl">
+              <button onClick={() => setShowLV((v) => !v)} className={cn("rounded-md px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors", showLV ? "bg-white/[0.12] text-foreground" : "text-muted-foreground hover:bg-white/[0.05] hover:text-foreground")}>Latvia</button>
+              <button onClick={() => setShowEE((v) => !v)} className={cn("rounded-md px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors", showEE ? "bg-white/[0.12] text-foreground" : "text-muted-foreground hover:bg-white/[0.05] hover:text-foreground")}>Estonia</button>
+            </div>
             {selected && (
               <div className="absolute right-4 top-4 z-[400] w-[420px] rounded-xl border border-border/50 bg-black/85 p-5 backdrop-blur-md shadow-2xl animate-scale-in">
                 <div className="flex items-start justify-between">
