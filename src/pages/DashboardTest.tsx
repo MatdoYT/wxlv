@@ -42,12 +42,21 @@ const DashboardTest = () => {
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
+  const visibleStations = useMemo(
+    () => stations.filter((s) => {
+      const c = (s as any).country;
+      if (c === "EE") return showEE;
+      return showLV; // LV or undefined
+    }),
+    [stations, showLV, showEE]
+  );
+
   const sorted = useMemo(
-    () => [...stations].sort((a, b) => {
+    () => [...visibleStations].sort((a, b) => {
       const diff = (b[sortKey] ?? 0) - (a[sortKey] ?? 0);
       return sortDir === "desc" ? diff : -diff;
     }),
-    [stations, sortKey, sortDir]
+    [visibleStations, sortKey, sortDir]
   );
 
   return (
