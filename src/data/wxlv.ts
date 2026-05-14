@@ -8,6 +8,7 @@ export type Station = {
   humidity: number; // %
   windSpeed: number; // m/s
   rainfall: number; // mm (last 24h)
+  country?: "LV" | "EE";
 };
 
 export type WarningLevel = "warning" | "dangerous" | "life-threatening";
